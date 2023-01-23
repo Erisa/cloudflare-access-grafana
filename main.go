@@ -33,8 +33,9 @@ const (
 
 // CloudflareClaim holds the claims about the End-User/Authentication event.
 type CloudflareClaim struct {
-	Email string `json:"email"`
-	Type  string `json:"type"`
+	Email  string            `json:"email"`
+	Type   string            `json:"type"`
+	Custom map[string]string `json:"custom"`
 }
 
 // Config is the general configuration (read from environment variables)
@@ -92,6 +93,9 @@ func VerifyToken(next http.Handler, tokenVerifier *oidc.IDTokenVerifier, cfg *Co
 
 		// set the authentication forward header before proxying the request
 		r.Header.Add(cfg.ForwardHeader, claims.Email)
+		r.Header.Add("X-Auth-Id", claims.Custom["id"])
+		r.Header.Add("X-Auth-Username", claims.Custom["preferred_username"])
+
 		log.Printf("Authenticated as: %s", claims.Email)
 
 		next.ServeHTTP(w, r)
