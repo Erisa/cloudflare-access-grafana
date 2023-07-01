@@ -94,7 +94,7 @@ func VerifyToken(next http.Handler, tokenVerifier *oidc.IDTokenVerifier, cfg *Co
 		// set the authentication forward header before proxying the request
 		r.Header.Add(cfg.ForwardHeader, claims.Email)
 		r.Header.Add("X-Auth-Id", claims.Custom["id"])
-		r.Header.Add("X-Auth-Username", claims.Custom["preferred_username"])
+		r.Header.Add("X-Auth-Username", claims.Custom["name"])
 
 		log.Printf("Authenticated as: %s", claims.Email)
 
